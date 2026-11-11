@@ -1,0 +1,38 @@
+---
+import Base from '../layouts/Base.astro';
+import VideoList from '../components/VideoList.astro';
+import { getVideos } from '../lib/data';
+import { site } from '../site.config';
+const videos = getVideos();
+const series = [
+  ['Buy / Bar Pour / Pass', 'One bottle, one straight verdict. Weekly.'],
+  ['Blind Friday', 'Covered labels, two to four pours, reveal at the end. Weekly.'],
+  ['Study Hall', 'What I learned this week studying for WSET Level 2.'],
+  ['Whiskey in 60', 'One idea, explained with a glass in hand, in a minute.'],
+  ['Lost Bottles', 'Stories from whiskey history.'],
+  ['Distillery Diaries', 'Grain to glass, from the distillery floor.'],
+  ['Ma-RYE-land', 'The rise, fall and comeback of Maryland rye.'],
+];
+---
+<Base title="Watch" description="Tastings, distillery visits and whiskey history on YouTube and Instagram.">
+  <section>
+    <div class="wrap">
+      <h1>Watch</h1>
+      <p class="lede">Long-form on <a href={site.links.youtube}>YouTube</a>, quick pours on <a href={site.links.instagram}>Instagram</a>.</p>
+      {videos.length > 0 ? <VideoList videos={videos} /> : <p class="muted">The first episode is in the edit. Subscribe on YouTube to get it first.</p>}
+    </div>
+  </section>
+  <section>
+    <div class="wrap">
+      <h2>The series</h2>
+      <dl class="series">
+        {series.map(([n, d]) => (<div><dt>{n}</dt><dd>{d}</dd></div>))}
+      </dl>
+    </div>
+  </section>
+</Base>
+<style>
+  .series { margin: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px 32px; }
+  dt { font-family: var(--display); font-weight: 700; font-size: 1.4rem; }
+  dd { margin: 2px 0 0; color: var(--muted); font-size: 1.05rem; }
+</style>

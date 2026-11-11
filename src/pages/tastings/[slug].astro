@@ -1,0 +1,79 @@
+---
+import Base from '../../layouts/Base.astro';
+import Radar from '../../components/Radar.astro';
+import Verdict from '../../components/Verdict.astro';
+import Glass from '../../components/Glass.astro';
+import { getTastings, colorOf, formatDate, url, type Tasting } from '../../lib/data';
+import { site } from '../../site.config';
+
+export function getStaticPaths() {
+  const all = getTastings();
+  return all.map((t, i) => ({ params: { slug: t.slug }, props: { t, newer: all[i - 1], older: all[i + 1] } }));
+}
+interface Props { t: Tasting; newer?: Tasting; older?: Tasting; }
+const { t, newer, older } = Astro.props;
+const c = colorOf(t.color);
+const facts = [
+  ['Distillery', t.distillery], ['Category', t.category], ['Region', t.region],
+  ['Proof', t.proof ? `${t.proof}` : ''], ['Age', t.age], ['Mash bill', t.mashBill],
+  ['Price paid', t.price ? `About $${t.price}` : ''], ['Color', c.name], ['Tasted', formatDate(t.date)],
+].filter(([, v]) => v);
+---
+<Base title={`${t.name}: tasting notes`} description={`No. ${t.number} of ${site.goal}. ${t.name} from ${t.distillery}. Verdict: ${t.verdict}.`}>
+    <article>
+    <section class="head">
+      <div class="wrap grid">
+        <div>
+          <p class="no num">No. {t.number} of {site.goal}</p>
+          <h1>{t.name}</h1>
+          <Verdict verdict={t.verdict} size="lg" />
+        </div>
+        <div class="pour" aria-hidden="true" style={`--c:${c.hex}`}>
+          <Glass fill={c.hex} size={120} />
+        </div>
+      </div>
+    </section>
+    <section>
+      <div class="wrap grid body">
+        <div class="notes">
+          {t.nose && (<><h2>Nose</h2><p>{t.nose}</p></>)}
+          {t.palate && (<><h2>Palate</h2><p>{t.palate}</p></>)}
+          {t.finish && (<><h2>Finish</h2><p>{t.finish}</p></>)}
+          {t.notes && (<><h2>Thoughts</h2><p>{t.notes}</p></>)}
+          {t.videoUrl && <p><a class="button" href={t.videoUrl}>Watch the tasting</a></p>}
+        </div>
+        <aside>
+          <Radar flavor={t.flavor} color={c.hex} />
+          <dl>
+            {facts.map(([k, v]) => (<div><dt>{k}</dt><dd>{v}</dd></div>))}
+          </dl>
+        </aside>
+      </div>
+    </section>
+    <nav class="wrap pager" aria-label="More tastings">
+      {older ? <a href={url(`/tastings/${older.slug}`)}>Previous: No. {older.number}, {older.name}</a> : <span></span>}
+      {newer && <a href={url(`/tastings/${newer.slug}`)}>Next: No. {newer.number}, {newer.name}</a>}
+    </nav>
+  </article>
+</Base>
+<style>
+  .grid { display: grid; grid-template-columns: 1fr auto; gap: 40px; align-items: end; }
+  .head { padding-bottom: 40px; }
+  .no { font-family: var(--display); font-weight: 700; font-size: 1.3rem; color: var(--muted); margin-bottom: 8px; }
+  .head h1 { margin-bottom: 24px; }
+  .pour { padding: 10px 30px 0; background: radial-gradient(closest-side at 50% 62%, color-mix(in srgb, var(--c) 30%, transparent), transparent); }
+  .pour :global(.glass) { color: #e4d6c2; }
+  .body { grid-template-columns: minmax(0, 1fr) 340px; align-items: start; }
+  .notes h2 { font-size: 1.6rem; margin-top: 1.2em; }
+  .notes h2:first-child { margin-top: 0; }
+  .notes p { font-size: 1.25rem; }
+  dl { margin: 28px 0 0; border-top: 1px solid var(--stave); }
+  dl div { display: grid; grid-template-columns: 7.5rem 1fr; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--stave); font-size: 1rem; }
+  dt { color: var(--muted); }
+  dd { margin: 0; }
+  .pager { display: flex; justify-content: space-between; gap: 20px; padding-top: 28px; padding-bottom: 56px; border-top: 1px solid var(--stave); flex-wrap: wrap; font-size: 1rem; }
+  @media (max-width: 760px) {
+    .grid, .body { grid-template-columns: 1fr; }
+    .pour { display: none; }
+  }
+</style>

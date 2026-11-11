@@ -1,0 +1,47 @@
+---
+import Glass from './Glass.astro';
+import { colorOf, url, type Tasting } from '../lib/data';
+import { site } from '../site.config';
+
+interface Props { tastings: Tasting[]; }
+const { tastings } = Astro.props;
+const byNumber = new Map(tastings.map((t) => [t.number, t]));
+const slots = Array.from({ length: site.goal }, (_, i) => i + 1);
+const count = tastings.length;
+---
+<figure class="counter">
+  <ol class="shelf" aria-label={`${count} of ${site.goal} whiskeys tasted`}>
+    {slots.map((n) => {
+      const t = byNumber.get(n);
+      return (
+        <li>
+          {t ? (
+            <a href={url(`/tastings/${t.slug}`)} title={`No. ${n}: ${t.name}`}>
+              <Glass fill={colorOf(t.color).hex} label={`No. ${n}: ${t.name}`} delay={n * 45} />
+            </a>
+          ) : (
+            <Glass />
+          )}
+        </li>
+      );
+    })}
+  </ol>
+  <figcaption>
+    <span class="tally num">{count}</span>
+    <span>of {site.goal} whiskeys tasted. Each glass is filled with that whiskey’s actual color.</span>
+  </figcaption>
+</figure>
+<style>
+  .counter { margin: 0; }
+  .shelf {
+    list-style: none; margin: 0; padding: 0;
+    display: grid; grid-template-columns: repeat(20, minmax(0, 1fr)); gap: 10px 4px;
+    justify-items: center;
+  }
+  .shelf a { display: block; border-radius: 2px; }
+  .shelf a:hover :global(.glass) { transform: translateY(-3px); }
+  .shelf :global(.glass) { transition: transform 150ms ease; width: 100%; max-width: 24px; height: auto; }
+  figcaption { display: flex; align-items: baseline; gap: 12px; margin-top: 22px; color: var(--muted); font-size: 1rem; }
+  .tally { font-family: var(--display); font-weight: 800; font-size: 3rem; color: var(--new-make); line-height: 1; }
+  @media (max-width: 640px) { .shelf { grid-template-columns: repeat(10, minmax(0, 1fr)); } }
+</style>

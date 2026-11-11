@@ -1,0 +1,31 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getCollection, render } from 'astro:content';
+import { url, formatDate } from '../../lib/data';
+export async function getStaticPaths() {
+  const guides = await getCollection('guides', (g) => !g.data.draft);
+  return guides.map((g) => ({ params: { slug: g.id }, props: { g } }));
+}
+const { g } = Astro.props;
+const { Content } = await render(g);
+---
+<Base title={g.data.title} description={g.data.summary}>
+  <article class="wrap guide">
+    <p class="kind muted"><a href={url('/guides')}>Guides</a> / {g.data.kind}, {formatDate(g.data.date.toISOString().slice(0, 10))}</p>
+    <h1>{g.data.title}</h1>
+    <p class="lede">{g.data.summary}</p>
+    {g.data.videoUrl && <p><a class="button" href={g.data.videoUrl}>Watch the video</a></p>}
+    <div class="prose"><Content /></div>
+  </article>
+</Base>
+<style>
+  .guide { padding-top: clamp(40px, 6vw, 72px); padding-bottom: 72px; }
+  .guide h1 { max-width: 18ch; }
+  .kind { font-size: 0.95rem; }
+  .prose { max-width: var(--measure); margin-top: 40px; }
+  .prose :global(h2) { font-size: 2rem; margin-top: 1.6em; }
+  .prose :global(h3) { margin-top: 1.4em; }
+  .prose :global(li) { margin-bottom: 0.5em; }
+  .prose :global(ol), .prose :global(ul) { padding-left: 1.3em; }
+  .prose :global(strong) { font-weight: 600; color: #fff6e8; }
+</style>

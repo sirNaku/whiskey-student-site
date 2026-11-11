@@ -1,0 +1,104 @@
+---
+import '@fontsource-variable/big-shoulders-display';
+import '@fontsource/big-shoulders-stencil-display/800';
+import '@fontsource-variable/newsreader/opsz';
+import '@fontsource-variable/newsreader/opsz-italic';
+import '../styles/global.css';
+import { site } from '../site.config';
+import { url, usingSample } from '../lib/data';
+
+interface Props { title?: string; description?: string; }
+const { title, description = site.description } = Astro.props;
+const pageTitle = title ? `${title} — ${site.name}` : site.name;
+const path = Astro.url.pathname.replace(import.meta.env.BASE_URL.replace(/\/$/, ''), '') || '/';
+
+const nav = [
+  { href: '/tastings', label: 'Tasting log' },
+  { href: '/watch', label: 'Watch' },
+  { href: '/guides', label: 'Guides' },
+  { href: '/about', label: 'About' },
+  { href: '/work-with-me', label: 'Work with me' },
+];
+const canonical = new URL(Astro.url.pathname, Astro.site);
+---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{pageTitle}</title>
+  <meta name="description" content={description} />
+  <link rel="canonical" href={canonical} />
+  <meta property="og:title" content={pageTitle} />
+  <meta property="og:description" content={description} />
+  <meta property="og:type" content="website" />
+  <meta name="theme-color" content="#1f1610" />
+  <link rel="icon" href={url('/favicon.svg')} type="image/svg+xml" />
+</head>
+<body>
+  {usingSample && <div class="sample-banner">Preview with sample data. Live builds only show what you publish from HQ.</div>}
+  <header class="site-header">
+    <div class="wrap bar">
+      <a class="wordmark" href={url('/')}>The Whiskey Student</a>
+      <nav aria-label="Main">
+        <ul>
+          {nav.map((n) => (
+            <li><a href={url(n.href)} aria-current={path.startsWith(n.href) ? 'page' : undefined}>{n.label}</a></li>
+          ))}
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main><slot /></main>
+
+  <footer class="site-footer">
+    <div class="wrap foot">
+      {site.newsletterAction ? (
+        <form class="signup" action={site.newsletterAction} method="post" target="_blank">
+          <label for="email"><strong>Tasting notes, once a month.</strong> What I poured, what I learned, where I’m headed next.</label>
+          <div class="row">
+            <input id="email" name="email" type="email" placeholder="you@example.com" required autocomplete="email" />
+            <button class="button" type="submit">Subscribe</button>
+          </div>
+        </form>
+      ) : (
+        <p class="signup"><strong>Follow along.</strong> New tastings every week on Instagram and YouTube.</p>
+      )}
+      <ul class="social">
+        <li><a href={site.links.instagram}>Instagram</a></li>
+        <li><a href={site.links.youtube}>YouTube</a></li>
+        <li><a href={`mailto:${site.links.email}`}>Email</a></li>
+      </ul>
+      <p class="fine">{site.responsibleNote}<br />© {new Date().getFullYear()} {site.name}. Notes are personal opinions; no brand reviews are paid unless marked.</p>
+    </div>
+  </footer>
+</body>
+</html>
+
+<style>
+  .site-header { border-bottom: 1px solid var(--stave); }
+  .bar { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding-top: 18px; padding-bottom: 16px; flex-wrap: wrap; }
+  .wordmark {
+    font-family: var(--stencil); font-weight: 800; font-size: 1.75rem; line-height: 1;
+    color: var(--new-make); text-decoration: none; letter-spacing: 0.01em;
+  }
+  nav ul { list-style: none; margin: 0; padding: 0; display: flex; gap: 6px 22px; flex-wrap: wrap; }
+  nav a {
+    font-family: var(--display); font-weight: 600; font-size: 1.15rem;
+    color: var(--muted); text-decoration: none; padding: 4px 0;
+  }
+  nav a:hover, nav a[aria-current='page'] { color: var(--new-make); box-shadow: inset 0 -2px 0 var(--brass); }
+
+  .site-footer { border-top: 1px solid var(--stave); margin-top: 0; background: #1a120d; }
+  .foot { padding-top: 48px; padding-bottom: 40px; display: grid; gap: 28px; }
+  .signup { max-width: 560px; }
+  .signup label { display: block; margin-bottom: 10px; }
+  .signup .row { display: flex; gap: 8px; }
+  .signup input {
+    flex: 1; min-width: 0; font: inherit; font-size: 1rem; padding: 9px 12px;
+    background: var(--char); border: 1.5px solid var(--stave); color: var(--new-make); border-radius: 2px;
+  }
+  .social { list-style: none; padding: 0; margin: 0; display: flex; gap: 22px; font-family: var(--display); font-weight: 600; font-size: 1.15rem; }
+  .fine { font-size: 0.9rem; color: var(--muted); margin: 0; }
+</style>

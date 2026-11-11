@@ -1,0 +1,53 @@
+---
+import Base from '../../layouts/Base.astro';
+import Ledger from '../../components/Ledger.astro';
+import { getTastings, CATEGORIES } from '../../lib/data';
+import { site } from '../../site.config';
+const tastings = getTastings();
+const present = CATEGORIES.filter((c) => tastings.some((t) => t.category === c));
+---
+<Base title="Tasting log" description="Every whiskey I've tasted, with notes and a Buy, Bar Pour or Pass verdict.">
+  <section>
+    <div class="wrap">
+      <h1>Tasting log</h1>
+      <p class="lede">Every whiskey on the road to {site.goal}. <strong>Buy</strong> means I’d spend my own money on it again. <strong>Bar Pour</strong> means worth trying by the glass. <strong>Pass</strong> means there’s a better bottle at the price.</p>
+      {tastings.length > 0 ? (
+        <>
+          <div class="filters" role="group" aria-label="Filter tastings">
+            <label>Category
+              <select id="f-cat"><option value="">All</option>{present.map((c) => <option>{c}</option>)}</select>
+            </label>
+            <label>Verdict
+              <select id="f-ver"><option value="">All</option><option>Buy</option><option>Bar Pour</option><option>Pass</option></select>
+            </label>
+            <p id="f-count" class="muted" aria-live="polite">{tastings.length} tastings</p>
+          </div>
+          <Ledger tastings={tastings} />
+        </>
+      ) : (
+        <p class="muted">No tastings published yet. Whiskey No. 1 is on its way.</p>
+      )}
+    </div>
+  </section>
+</Base>
+<script>
+  const cat = document.getElementById('f-cat') as HTMLSelectElement | null;
+  const ver = document.getElementById('f-ver') as HTMLSelectElement | null;
+  const count = document.getElementById('f-count');
+  function apply() {
+    let shown = 0;
+    document.querySelectorAll<HTMLLIElement>('.ledger li').forEach((li) => {
+      const ok = (!cat?.value || li.dataset.category === cat.value) && (!ver?.value || li.dataset.verdict === ver.value);
+      li.hidden = !ok; if (ok) shown++;
+    });
+    if (count) count.textContent = `${shown} ${shown === 1 ? 'tasting' : 'tastings'}`;
+  }
+  cat?.addEventListener('change', apply);
+  ver?.addEventListener('change', apply);
+</script>
+<style>
+  .filters { display: flex; gap: 20px; align-items: end; flex-wrap: wrap; margin: 32px 0 20px; }
+  .filters label { display: grid; gap: 4px; font-family: var(--display); font-weight: 600; font-size: 1.05rem; color: var(--muted); }
+  .filters select { font: inherit; font-family: var(--body); font-size: 1rem; padding: 7px 10px; background: var(--char-raised); color: var(--new-make); border: 1.5px solid var(--stave); border-radius: 2px; }
+  #f-count { margin: 0 0 8px auto; font-size: 0.95rem; }
+</style>

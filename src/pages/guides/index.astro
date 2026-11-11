@@ -1,0 +1,33 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getCollection } from 'astro:content';
+import { url, formatDate } from '../../lib/data';
+const guides = (await getCollection('guides', (g) => !g.data.draft))
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+---
+<Base title="Guides" description="Explainers, distillery guides and whiskey history, written as I learn.">
+  <section>
+    <div class="wrap">
+      <h1>Guides</h1>
+      <p class="lede">What I’ve learned, written down so you can learn it faster. Explainers, distillery guides and the history behind the bottle.</p>
+      <ul class="list">
+        {guides.map((g) => (
+          <li>
+            <p class="kind muted">{g.data.kind}, {formatDate(g.data.date.toISOString().slice(0, 10))}</p>
+            <h2><a href={url(`/guides/${g.id}`)}>{g.data.title}</a></h2>
+            <p>{g.data.summary}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+</Base>
+<style>
+  .list { list-style: none; margin: 40px 0 0; padding: 0; border-top: 1px solid var(--stave); }
+  li { padding: 28px 0; border-bottom: 1px solid var(--stave); }
+  h2 { font-size: 2rem; margin-bottom: 8px; }
+  h2 a { color: var(--new-make); text-decoration: none; }
+  h2 a:hover { color: var(--brass); }
+  .kind { font-size: 0.95rem; margin-bottom: 6px; }
+  li > p:last-child { margin: 0; }
+</style>

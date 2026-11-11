@@ -1,0 +1,42 @@
+---
+import Verdict from './Verdict.astro';
+import { colorOf, formatDate, url, type Tasting } from '../lib/data';
+interface Props { tastings: Tasting[]; }
+const { tastings } = Astro.props;
+---
+<ol class="ledger">
+  {tastings.map((t) => (
+    <li data-category={t.category} data-verdict={t.verdict}>
+      <span class="no num">No. {t.number}</span>
+      <span class="swatch" style={`background:${colorOf(t.color).hex}`} title={colorOf(t.color).name}></span>
+      <span class="what">
+        <a href={url(`/tastings/${t.slug}`)}>{t.name}</a>
+        <span class="meta">{t.category}{t.proof ? `, ${t.proof} proof` : ''}{t.price ? `, about $${t.price}` : ''}</span>
+      </span>
+      <span class="when muted">{formatDate(t.date)}</span>
+      <span class="v"><Verdict verdict={t.verdict} /></span>
+    </li>
+  ))}
+</ol>
+<style>
+  .ledger { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--stave); }
+  li {
+    display: grid; grid-template-columns: 5.5rem 28px 1fr auto 7rem; align-items: center; gap: 16px;
+    padding: 14px 0; border-bottom: 1px solid var(--stave);
+  }
+  .no { font-family: var(--display); font-weight: 700; color: var(--muted); font-size: 1.1rem; }
+  .swatch { width: 28px; height: 28px; border-radius: 50%; box-shadow: inset 0 0 0 1px rgba(0,0,0,.25); }
+  .what a { font-family: var(--display); font-weight: 700; font-size: 1.45rem; color: var(--new-make); text-decoration: none; line-height: 1.1; }
+  .what a:hover { color: var(--brass); }
+  .meta { display: block; font-size: 0.95rem; color: var(--muted); }
+  .when { font-size: 0.95rem; }
+  .v { text-align: right; }
+  @media (max-width: 720px) {
+    li { grid-template-columns: 28px 1fr auto; gap: 4px 12px; }
+    .no { grid-column: 2; grid-row: 1; font-size: 0.95rem; }
+    .swatch { grid-row: 1 / span 3; align-self: start; margin-top: 4px; }
+    .what { grid-column: 2; }
+    .when { grid-column: 2; }
+    .v { grid-column: 3; grid-row: 1 / span 3; align-self: center; }
+  }
+</style>

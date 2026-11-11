@@ -1,0 +1,83 @@
+---
+import Base from '../layouts/Base.astro';
+import Counter from '../components/Counter.astro';
+import Ledger from '../components/Ledger.astro';
+import VideoList from '../components/VideoList.astro';
+import { getCollection } from 'astro:content';
+import { getTastings, getVideos, url, formatDate } from '../lib/data';
+import { site } from '../site.config';
+
+const tastings = getTastings();
+const videos = getVideos().slice(0, 3);
+const guides = (await getCollection('guides', (g) => !g.data.draft))
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf()).slice(0, 3);
+---
+<Base>
+  <section class="hero">
+    <div class="wrap">
+      <h1>{site.tagline}</h1>
+      <p class="lede">I’m {site.host}, a bartender and photographer working my way from curious to expert. Bourbon, rye, Scotch, Irish, Japanese and American single malt: every bottle I taste goes on this shelf, with honest notes and a straight verdict.</p>
+      <Counter tastings={tastings} />
+      <p class="cta">
+        <a class="button" href={url('/tastings')}>Read the tasting log</a>
+        <a class="button ghost" href={site.links.youtube}>Watch on YouTube</a>
+      </p>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <div class="section-head">
+        <h2>Latest pours</h2>
+        {tastings.length > 0 && <a href={url('/tastings')}>All {tastings.length} tastings</a>}
+      </div>
+      {tastings.length > 0 ? (
+        <Ledger tastings={tastings.slice(0, 5)} />
+      ) : (
+        <p class="muted">The log opens with whiskey No. 1. The first pour is coming soon; follow on <a href={site.links.instagram}>Instagram</a> to catch it.</p>
+      )}
+    </div>
+  </section>
+
+  {videos.length > 0 && (
+    <section>
+      <div class="wrap">
+        <div class="section-head">
+          <h2>New on the channel</h2>
+          <a href={url('/watch')}>All videos</a>
+        </div>
+        <VideoList videos={videos} />
+      </div>
+    </section>
+  )}
+
+  {guides.length > 0 && (
+    <section>
+      <div class="wrap">
+        <div class="section-head">
+          <h2>Guides</h2>
+          <a href={url('/guides')}>All guides</a>
+        </div>
+        <ul class="guides">
+          {guides.map((g) => (
+            <li>
+              <p class="kind muted">{g.data.kind}, {formatDate(g.data.date.toISOString().slice(0, 10))}</p>
+              <h3><a href={url(`/guides/${g.id}`)}>{g.data.title}</a></h3>
+              <p>{g.data.summary}</p>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  )}
+</Base>
+<style>
+  .hero { padding-top: clamp(40px, 7vw, 88px); }
+  .hero h1 { max-width: 15ch; margin-bottom: 0.35em; }
+  .hero .lede { margin-bottom: 48px; }
+  .cta { display: flex; gap: 12px; flex-wrap: wrap; margin: 40px 0 0; }
+  .guides { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 32px; }
+  .guides h3 a { color: var(--new-make); text-decoration: none; }
+  .guides h3 a:hover { color: var(--brass); }
+  .kind { font-size: 0.95rem; margin-bottom: 6px; }
+</style>
