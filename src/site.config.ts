@@ -12,9 +12,9 @@ export const site = {
     instagram: 'https://www.instagram.com/mayo_whiskeypapi/',
     instagramHandle: '@mayo_whiskeypapi',
     // Paste your channel link, e.g. 'https://www.youtube.com/@YourChannel'
-    youtube: '',
+    youtube: 'https://www.youtube.com/@TheWhiskeyPapi',
     // Public contact email for brands (optional)
-    email: '',
+    email: 'naku@mayo2media.com',
   },
 
   // Newsletter: paste the form "action" URL from Buttondown, Kit or Beehiiv. Empty hides the form.
