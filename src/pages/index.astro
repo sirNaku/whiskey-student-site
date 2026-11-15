@@ -14,7 +14,7 @@ const guides = (await getCollection('guides', (g) => !g.data.draft)).sort((a, b)
   <section class="hero">
     <div class="wrap">
       <h1>{site.tagline}</h1>
-      <p class="lede">I’m {site.host}, a bartender and photographer working my way from curious to expert. Bourbon, rye, Scotch, Irish, Japanese and American single malt: every bottle I taste goes on this shelf, with honest notes and a straight verdict.</p>
+      <p class="lede">I’m Mayo aka Whiskey Papi, a bartender and photographer working my way from curious to expert. Bourbon, rye, Scotch, Irish, Japanese and American single malt: every bottle I taste goes on this shelf, with honest notes and a straight verdict.</p>
       <Counter tastings={tastings} />
       <p class="cta">
         <a class="button" href={url('/tastings')}>Read the tasting log</a>
