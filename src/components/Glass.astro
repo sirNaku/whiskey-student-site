@@ -1,5 +1,5 @@
 ---
-// One Glencairn-style glass. Filled with the whiskey's color when tasted, empty outline otherwise.
+// One Glencairn-style glass, filled with the whiskey's color when tasted.
 interface Props { fill?: string; size?: number; label?: string; delay?: number; }
 const { fill, size = 22, label, delay = 0 } = Astro.props;
 const id = `bowl-${Math.random().toString(36).slice(2, 9)}`;
@@ -8,10 +8,10 @@ const bowl = 'M5 1h10c0 5 3 8.5 3 14s-3 7.5-6 8v4l4 2v2H4v-2l4-2v-4c-3-.5-6-2.5-
 <svg class:list={['glass', { filled: !!fill }]} viewBox="0 0 20 32" width={size} height={size * 1.6}
   role={label ? 'img' : 'presentation'} aria-label={label} style={`--d:${delay}ms`}>
   {fill && (
-    <clipPath id={id}><path d="M5 1h10c0 5 3 8.5 3 14s-3 7.5-6 8H8c-3-.5-6-2.5-6-8S5 6 5 1Z" /></clipPath>
-    <g clip-path={`url(#${id})`}>
-      <rect class="liquid" x="0" y="13" width="20" height="11" fill={fill} />
-    </g>
+    <>
+      <clipPath id={id}><path d="M5 1h10c0 5 3 8.5 3 14s-3 7.5-6 8H8c-3-.5-6-2.5-6-8S5 6 5 1Z" /></clipPath>
+      <g clip-path={`url(#${id})`}><rect class="liquid" x="0" y="13" width="20" height="11" fill={fill} /></g>
+    </>
   )}
   <path d={bowl} fill="none" stroke="currentColor" stroke-width="1.1" stroke-linejoin="round" />
 </svg>

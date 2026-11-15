@@ -2,24 +2,18 @@
 import { formatDate, type Video } from '../lib/data';
 interface Props { videos: Video[]; }
 const { videos } = Astro.props;
-function ytId(u: string) {
-  const m = u.match(/(?:v=|youtu\.be\/|shorts\/|embed\/)([\w-]{11})/);
-  return m ? m[1] : null;
-}
+const ytId = (u: string) => { const m = u.match(/(?:v=|youtu\.be\/|shorts\/|embed\/)([\w-]{11})/); return m ? m[1] : null; };
 ---
 <ul class="videos">
-  {videos.map((v) => {
-    const id = ytId(v.url);
-    return (
-      <li>
-        <a href={v.url} class="thumb" aria-label={`Watch ${v.title} on ${v.platform}`}>
-          {id ? <img src={`https://i.ytimg.com/vi/${id}/hqdefault.jpg`} alt="" loading="lazy" width="480" height="360" /> : <span class="blank">{v.platform}</span>}
-        </a>
-        <h3><a href={v.url}>{v.title}</a></h3>
-        <p class="muted">{formatDate(v.date)}{v.series ? `, ${v.series}` : v.pillar ? `, ${v.pillar}` : ''}</p>
-      </li>
-    );
-  })}
+  {videos.map((v) => { const id = ytId(v.url); return (
+    <li>
+      <a href={v.url} class="thumb" aria-label={`Watch ${v.title} on ${v.platform}`}>
+        {id ? <img src={`https://i.ytimg.com/vi/${id}/hqdefault.jpg`} alt="" loading="lazy" width="480" height="360" /> : <span class="blank">{v.platform}</span>}
+      </a>
+      <h3><a href={v.url}>{v.title}</a></h3>
+      <p class="muted">{formatDate(v.date)}{v.series ? `, ${v.series}` : v.pillar ? `, ${v.pillar}` : ''}</p>
+    </li>
+  ); })}
 </ul>
 <style>
   .videos { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 32px 24px; }

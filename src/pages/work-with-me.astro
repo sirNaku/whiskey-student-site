@@ -4,22 +4,19 @@ import { site } from '../site.config';
 const offers = [
   ['Distillery features', 'A visit becomes a YouTube episode, a set of Reels, a photo carousel and a written visitor guide on this site.'],
   ['Honest tastings', 'Send a bottle and I’ll taste it on camera and give it a real verdict. Gifted bottles are always disclosed.'],
-  ['Photography and video', 'Through my media company I shoot bottles, cocktails and venues for spirits brands, bars and restaurants.'],
+  ['Photography and video', 'Through Mayo2Media I shoot bottles, cocktails and venues for spirits brands, bars and restaurants.'],
   ['Events and education', 'Guided tastings and talks that bring a bartender’s view to whiskey basics.'],
 ];
+const contact = site.links.email ? `mailto:${site.links.email}?subject=Working%20together` : site.links.instagram;
 ---
 <Base title="Work with me" description="Distillery features, tastings, and photography for spirits brands and hospitality.">
-  <section>
-    <div class="wrap">
-      <h1>Work with me</h1>
-      <p class="lede">I work with distilleries, spirits brands and venues that want their story told honestly to people who are still learning to love whiskey.</p>
-      <dl class="offers">
-        {offers.map(([k, v]) => (<div><dt>{k}</dt><dd>{v}</dd></div>))}
-      </dl>
-      <p class="cta"><a class="button" href={`mailto:${site.links.email}?subject=Working%20together`}>Email me</a></p>
-      <p class="muted small">Ask for the current media kit with audience numbers and rates.</p>
-    </div>
-  </section>
+  <section><div class="wrap">
+    <h1>Work with me</h1>
+    <p class="lede">I work with distilleries, spirits brands and venues that want their story told honestly to people who are still learning to love whiskey.</p>
+    <dl class="offers">{offers.map(([k, v]) => (<div><dt>{k}</dt><dd>{v}</dd></div>))}</dl>
+    <p class="cta"><a class="button" href={contact}>{site.links.email ? 'Email me' : `Message ${site.links.instagramHandle || 'me'} on Instagram`}</a></p>
+    <p class="muted small">Ask for the current media kit with audience numbers and rates. My audience is 21+.</p>
+  </div></section>
 </Base>
 <style>
   .offers { margin: 40px 0 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 32px 40px; }

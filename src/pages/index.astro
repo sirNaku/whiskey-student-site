@@ -6,11 +6,9 @@ import VideoList from '../components/VideoList.astro';
 import { getCollection } from 'astro:content';
 import { getTastings, getVideos, url, formatDate } from '../lib/data';
 import { site } from '../site.config';
-
 const tastings = getTastings();
 const videos = getVideos().slice(0, 3);
-const guides = (await getCollection('guides', (g) => !g.data.draft))
-  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf()).slice(0, 3);
+const guides = (await getCollection('guides', (g) => !g.data.draft)).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf()).slice(0, 3);
 ---
 <Base>
   <section class="hero">
@@ -20,55 +18,31 @@ const guides = (await getCollection('guides', (g) => !g.data.draft))
       <Counter tastings={tastings} />
       <p class="cta">
         <a class="button" href={url('/tastings')}>Read the tasting log</a>
-        <a class="button ghost" href={site.links.youtube}>Watch on YouTube</a>
+        {site.links.instagram && <a class="button ghost" href={site.links.instagram}>Follow {site.links.instagramHandle || 'on Instagram'}</a>}
+        {site.links.youtube && <a class="button ghost" href={site.links.youtube}>Watch on YouTube</a>}
       </p>
     </div>
   </section>
-
   <section>
     <div class="wrap">
-      <div class="section-head">
-        <h2>Latest pours</h2>
-        {tastings.length > 0 && <a href={url('/tastings')}>All {tastings.length} tastings</a>}
-      </div>
-      {tastings.length > 0 ? (
-        <Ledger tastings={tastings.slice(0, 5)} />
-      ) : (
-        <p class="muted">The log opens with whiskey No. 1. The first pour is coming soon; follow on <a href={site.links.instagram}>Instagram</a> to catch it.</p>
-      )}
+      <div class="section-head"><h2>Latest pours</h2>{tastings.length > 0 && <a href={url('/tastings')}>All {tastings.length} tastings</a>}</div>
+      {tastings.length > 0 ? <Ledger tastings={tastings.slice(0, 5)} /> :
+        <p class="muted">The log opens with whiskey No. 1. The first pour is coming soon{site.links.instagram && <>; follow <a href={site.links.instagram}>{site.links.instagramHandle || 'on Instagram'}</a> to catch it</>}.</p>}
     </div>
   </section>
-
   {videos.length > 0 && (
-    <section>
-      <div class="wrap">
-        <div class="section-head">
-          <h2>New on the channel</h2>
-          <a href={url('/watch')}>All videos</a>
-        </div>
-        <VideoList videos={videos} />
-      </div>
-    </section>
+    <section><div class="wrap">
+      <div class="section-head"><h2>New on the channel</h2><a href={url('/watch')}>All videos</a></div>
+      <VideoList videos={videos} />
+    </div></section>
   )}
-
   {guides.length > 0 && (
-    <section>
-      <div class="wrap">
-        <div class="section-head">
-          <h2>Guides</h2>
-          <a href={url('/guides')}>All guides</a>
-        </div>
-        <ul class="guides">
-          {guides.map((g) => (
-            <li>
-              <p class="kind muted">{g.data.kind}, {formatDate(g.data.date.toISOString().slice(0, 10))}</p>
-              <h3><a href={url(`/guides/${g.id}`)}>{g.data.title}</a></h3>
-              <p>{g.data.summary}</p>
-            </li>
-          ))}
-        </ul>
-      </div>
-    </section>
+    <section><div class="wrap">
+      <div class="section-head"><h2>Guides</h2><a href={url('/guides')}>All guides</a></div>
+      <ul class="guides">{guides.map((g) => (
+        <li><p class="kind muted">{g.data.kind}, {formatDate(g.data.date.toISOString().slice(0, 10))}</p>
+          <h3><a href={url(`/guides/${g.id}`)}>{g.data.title}</a></h3><p>{g.data.summary}</p></li>))}</ul>
+    </div></section>
   )}
 </Base>
 <style>

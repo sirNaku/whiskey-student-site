@@ -13,5 +13,4 @@ const guides = defineCollection({
     draft: z.boolean().default(false),
   }),
 });
-
 export const collections = { guides };

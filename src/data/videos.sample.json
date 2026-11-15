@@ -1,38 +1,22 @@
 {
-  "updated": "2026-10-18T12:00:00Z",
+  "updated": "2026-11-12T06:00:00Z",
   "sample": true,
   "videos": [
     {
-      "title": "Day 1: A bartender learning whiskey in public",
+      "title": "Buffalo Trace Review: Is the Hype Real? A Bartender\u2019s Honest Take",
       "url": "https://www.youtube.com/",
       "platform": "YouTube",
-      "date": "2026-10-08",
-      "pillar": "Learning Journey POV",
+      "date": "2026-11-12",
+      "pillar": "Tasting & Reviews",
       "series": ""
     },
     {
-      "title": "Maryland Rye: the whiskey that vanished",
+      "title": "Bourbon vs Rye vs Tennessee Whiskey: The Rules Explained",
       "url": "https://www.youtube.com/",
       "platform": "YouTube",
-      "date": "2026-10-15",
-      "pillar": "History & Heritage",
-      "series": "Ma-RYE-land"
-    },
-    {
-      "title": "$25 vs. $100 bourbon, blind",
-      "url": "https://www.youtube.com/",
-      "platform": "YouTube",
-      "date": "2026-10-22",
-      "pillar": "Head-to-Head",
-      "series": "Blind Friday"
-    },
-    {
-      "title": "Inside Sagamore Spirit: grain to glass",
-      "url": "https://www.youtube.com/",
-      "platform": "YouTube",
-      "date": "2026-10-29",
-      "pillar": "Distillery Visits",
-      "series": "Distillery Diaries"
+      "date": "2026-11-19",
+      "pillar": "Education & How-To",
+      "series": ""
     }
   ]
 }
